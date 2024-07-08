@@ -3,10 +3,10 @@ package guru.springframework.spring6restmvc.controller;
 import guru.springframework.spring6restmvc.model.Customer;
 import guru.springframework.spring6restmvc.services.CustomerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +29,31 @@ public class CustomerController {
     @RequestMapping(value = "{customerId}", method = RequestMethod.GET)
     public Customer getCustomerById(@PathVariable("customerId") UUID id){
         return customerService.getCustomerById(id);
+    }
+
+    /*
+         Assignment - Handle HTTP Post for Create new Customer
+
+        Create Controller method to handle post
+
+        Update Request Mapping
+
+        Save to in-memory hash map
+
+        Return 201 status with location of created customer object
+     */
+    @PostMapping
+    public ResponseEntity handlePost(@RequestBody Customer customer){
+        // save the customer
+        Customer savedCustomer = customerService.saveNewCustomer(customer);
+
+        // Location
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/api/v1/customer/" + savedCustomer.getId().toString());
+
+        // return location and status code
+        return new ResponseEntity(headers, HttpStatus.CREATED);
+
     }
 
 }
