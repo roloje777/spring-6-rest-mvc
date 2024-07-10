@@ -12,11 +12,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.UUID;
+
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CustomerController.class)
@@ -37,9 +39,27 @@ class CustomerControllerTest {
     void setUp() {
         customerServiceImpl = new CustomerServiceImpl();
     }
-
+/*
+    Use Spring MockMVC and Mockito to test Update endpoint for Customer
+    Write test to test Update of customer
+    Verify HTTP 204 is returned
+    Verify Mockito Mock is called
+ */
     @Test
-    void testCreatCustomer() throws Exception {
+    void testUpdateCustomer()throws Exception{
+        Customer sentCustomer = customerServiceImpl.getAllCustomers().get(0);
+
+        mockMvc.perform(put("/api/v1/customer/" + sentCustomer.getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(sentCustomer)))
+                .andExpect(status().isNoContent());// verify 204 is returned
+        //Verify Mockito Mock is called
+        verify(customerService).updateCustomerById(any(UUID.class), any(Customer.class));
+
+    }
+    @Test
+    void testCreateCustomer() throws Exception {
         Customer customer = customerServiceImpl.getAllCustomers().get(0);
         customer.setId(null);
         customer.setVersion(null);
