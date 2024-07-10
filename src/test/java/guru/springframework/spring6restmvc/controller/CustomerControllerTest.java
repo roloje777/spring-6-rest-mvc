@@ -56,6 +56,7 @@ class CustomerControllerTest {
         sentCustomer.setId(null);
         sentCustomer.setVersion(null);
 
+        // Mockito action setup
         given(customerService.saveNewCustomer(any(Customer.class))).willReturn(customerServiceImpl.getAllCustomers().get(1));
 
         mockMvc.perform(post("/api/v1/customer")
