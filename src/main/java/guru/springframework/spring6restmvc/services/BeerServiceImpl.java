@@ -1,14 +1,20 @@
 package guru.springframework.spring6restmvc.services;
 
+import guru.springframework.spring6restmvc.entities.Beer;
+import guru.springframework.spring6restmvc.mappers.BeerMapper;
+import guru.springframework.spring6restmvc.mappers.BeerMapperImpl;
 import guru.springframework.spring6restmvc.model.BeerDTO;
 import guru.springframework.spring6restmvc.model.BeerStyle;
+import guru.springframework.spring6restmvc.repositories.BeerRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by jt, Spring Framework Guru.
@@ -18,10 +24,8 @@ import java.util.*;
 public class BeerServiceImpl implements BeerService {
 
     private Map<UUID, BeerDTO> beerMap;
-
     public BeerServiceImpl() {
         this.beerMap = new HashMap<>();
-
         BeerDTO beer1 = BeerDTO.builder()
                 .id(UUID.randomUUID())
                 .version(1)
@@ -61,7 +65,11 @@ public class BeerServiceImpl implements BeerService {
         beerMap.put(beer1.getId(), beer1);
         beerMap.put(beer2.getId(), beer2);
         beerMap.put(beer3.getId(), beer3);
+
+
+
     }
+
 
     @Override
     public void patchBeerById(UUID beerId, BeerDTO beer) {
@@ -90,7 +98,9 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public void deleteById(UUID beerId) {
+
         beerMap.remove(beerId);
+
     }
 
     @Override
@@ -104,7 +114,9 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public List<BeerDTO> listBeers(){
-        return new ArrayList<>(beerMap.values());
+         return new ArrayList<>(beerMap.values());
+
+
     }
 
     @Override
@@ -113,6 +125,7 @@ public class BeerServiceImpl implements BeerService {
         log.debug("Get Beer by Id - in service. Id: " + id.toString());
 
         return Optional.of(beerMap.get(id));
+
     }
 
     @Override
@@ -131,8 +144,7 @@ public class BeerServiceImpl implements BeerService {
                 .build();
 
         beerMap.put(savedBeer.getId(), savedBeer);
-
-        return savedBeer;
+      return savedBeer;
     }
 }
 
