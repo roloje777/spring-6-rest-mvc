@@ -1,5 +1,6 @@
 package guru.springframework.spring6restmvc.services;
 
+import guru.springframework.spring6restmvc.entities.Customer;
 import guru.springframework.spring6restmvc.model.CustomerDTO;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface CustomerService {
 
     CustomerDTO saveNewCustomer(CustomerDTO customer);
 
-    void updateCustomerById(UUID customerId, CustomerDTO customer);
+    Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer);
 
     void deleteCustomerById(UUID customerId);
 

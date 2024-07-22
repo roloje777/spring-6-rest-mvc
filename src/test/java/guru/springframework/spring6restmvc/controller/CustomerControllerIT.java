@@ -107,6 +107,17 @@ class CustomerControllerIT {
 
     }
 
+    // here we send a random UUID that will not be found in the
+    // so a NotFoundException is thrown by the comntroller
+    @Test
+    void testUpdateNotFound(){
+        assertThrows(NotFoundException.class, () ->{
+            customerController.updateCustomerByID(UUID.randomUUID(), CustomerDTO.builder().build());
+        });
+
+    }
+
+
 
 
 }

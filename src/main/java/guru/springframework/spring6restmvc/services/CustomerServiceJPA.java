@@ -1,5 +1,6 @@
 package guru.springframework.spring6restmvc.services;
 
+import guru.springframework.spring6restmvc.mappers.BeerMapper;
 import guru.springframework.spring6restmvc.mappers.CustomerMapper;
 import guru.springframework.spring6restmvc.model.CustomerDTO;
 import guru.springframework.spring6restmvc.repositories.CustomerRepository;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,11 +44,16 @@ public class CustomerServiceJPA implements CustomerService {
     }
 
     @Override
-    public void updateCustomerById(UUID customerId, CustomerDTO customer) {
-            customerRepository.findById(customerId).ifPresent(foundCustomer ->{
-                foundCustomer.setName(customer.getName());
-                customerRepository.save(foundCustomer);
-            });
+    public Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer) {
+//            customerRepository.findById(customerId).ifPresent(foundCustomer ->{
+//                foundCustomer.setName(customer.getName());
+//                customerRepository.save(foundCustomer);
+//            });
+        return customerRepository.findById(customerId)
+                .map(foundCustomer -> {
+                    foundCustomer.setName(customer.getName());
+                    return Optional.of(customerMapper.customerToCustomerDto(customerRepository.save(foundCustomer)));
+                }).orElseGet(Optional::empty);
     }
 
     @Override
