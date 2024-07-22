@@ -137,6 +137,35 @@ class CustomerControllerIT {
         });
     }
 
+    @Test
+    void testPatchById(){
+        Customer customer = customerRepository.findAll().getFirst();
+        CustomerDTO customerDTO = customerMapper.customerToCustomerDto(customer);
+        customerDTO.setId(null);// system generated
+        customerDTO.setVersion(null);
+        customerDTO.setUpdateDate(null);
+        customerDTO.setCreatedDate(null);
+        final String customerName = "Pipo";
+        customerDTO.setName(customerName);
+
+        ResponseEntity responseEntity =  customerController.patchCustomerById(customer.getId(),customerDTO);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204)); //204 = NoContent
+
+        Customer updatedCustomer = customerRepository.findById(customer.getId()).get();
+        assertThat(updatedCustomer.getName()).isEqualTo(customerName);
+
+    }
+
+    // here we send a random UUID that will not be found in the
+    // so a NotFoundException is thrown by the comntroller
+    @Test
+    void testPatchNotFound(){
+        assertThrows(NotFoundException.class, () ->{
+            customerController.patchCustomerById(UUID.randomUUID(), CustomerDTO.builder().build());
+        });
+
+    }
+
 
 
 
