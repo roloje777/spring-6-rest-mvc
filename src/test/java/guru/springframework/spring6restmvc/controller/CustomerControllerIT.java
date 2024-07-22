@@ -1,11 +1,14 @@
 package guru.springframework.spring6restmvc.controller;
 
+import guru.springframework.spring6restmvc.entities.Beer;
 import guru.springframework.spring6restmvc.entities.Customer;
 import guru.springframework.spring6restmvc.model.CustomerDTO;
 import guru.springframework.spring6restmvc.repositories.CustomerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +56,32 @@ class CustomerControllerIT {
         Customer customer = customerRepository.findAll().get(0);
         CustomerDTO customerDTO = customerController.getCustomerById(customer.getId());
         assertThat(customerDTO).isNotNull();
+    }
+
+    // above used as the data needs to be reset once test is done for the other tests to pass
+    @Rollback
+    @Transactional
+    @Test
+    void saveNewCustomerTest(){
+        // Sent  in post action
+        CustomerDTO customerDTO = CustomerDTO.builder()
+                .name(" Pipo")
+                .build();
+
+        // returned from the controller
+        ResponseEntity responseEntity =  customerController.handlePost(customerDTO);
+
+        // do the assertions customer is created
+        // that hears has information
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(201));//created
+        assertThat(responseEntity.getHeaders().getLocation().getPath()).isNotNull();
+
+        // now we retrieve the UUID from the responseEntity and to assertion on it
+        String[] locationID = responseEntity.getHeaders().getLocation().getPath().split("/");
+        UUID savedId = UUID.fromString(locationID[4]);
+        Customer customer = customerRepository.findById(savedId).get();
+        assertThat(customer).isNotNull();
+
     }
 }
 

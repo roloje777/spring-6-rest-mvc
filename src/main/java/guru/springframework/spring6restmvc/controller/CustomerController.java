@@ -56,7 +56,7 @@ public class CustomerController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", CUSTOMER_PATH + "/" + savedCustomer.getId().toString());
 
-        return new ResponseEntity(headers, HttpStatus.CREATED);
+        return new ResponseEntity(headers, HttpStatus.CREATED);// 201
     }
 
     @GetMapping(CUSTOMER_PATH)
