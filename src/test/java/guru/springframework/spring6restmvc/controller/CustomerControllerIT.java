@@ -2,6 +2,7 @@ package guru.springframework.spring6restmvc.controller;
 
 import guru.springframework.spring6restmvc.entities.Beer;
 import guru.springframework.spring6restmvc.entities.Customer;
+import guru.springframework.spring6restmvc.mappers.CustomerMapper;
 import guru.springframework.spring6restmvc.model.CustomerDTO;
 import guru.springframework.spring6restmvc.repositories.CustomerRepository;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,9 @@ class CustomerControllerIT {
 
     @Autowired
     CustomerController customerController;
+
+    @Autowired
+    CustomerMapper customerMapper;
 
     @Rollback
     @Transactional
@@ -83,6 +87,28 @@ class CustomerControllerIT {
         assertThat(customer).isNotNull();
 
     }
+
+    @Test
+    void updateExistingCustomerTest(){
+        Customer customer = customerRepository.findAll().getFirst();
+        CustomerDTO customerDTO = customerMapper.customerToCustomerDto(customer);
+        customerDTO.setId(null);// system generated
+        customerDTO.setVersion(null);
+        customerDTO.setUpdateDate(null);
+        customerDTO.setCreatedDate(null);
+        final String customerName = "Pipo";
+        customerDTO.setName(customerName);
+
+        ResponseEntity responseEntity =  customerController.updateCustomerByID(customer.getId(),customerDTO);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204)); //204 = NoContent
+
+        Customer updatedCustomer = customerRepository.findById(customer.getId()).get();
+        assertThat(updatedCustomer.getName()).isEqualTo(customerName);
+
+    }
+
+
+
 }
 
 

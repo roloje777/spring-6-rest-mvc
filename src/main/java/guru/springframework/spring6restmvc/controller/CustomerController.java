@@ -46,7 +46,7 @@ public class CustomerController {
 
         customerService.updateCustomerById(customerId, customer);
 
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);// http code 204
     }
 
     @PostMapping(CUSTOMER_PATH)
