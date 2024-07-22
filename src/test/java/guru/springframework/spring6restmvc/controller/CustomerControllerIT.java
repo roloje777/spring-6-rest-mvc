@@ -117,6 +117,26 @@ class CustomerControllerIT {
 
     }
 
+    @Rollback
+    @Transactional
+    @Test
+    void testDeleteByIdFound(){
+        Customer customer = customerRepository.findAll().getFirst();
+
+        ResponseEntity responseEntity = customerController.deleteCustomerById(customer.getId());
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));//no content
+
+        assertThat(customerRepository.findById(customer.getId())).isEmpty();
+    }
+
+    // return a 404 if not found
+    @Test
+    void testDeleteByIdNotFound(){
+        assertThrows(NotFoundException.class, () -> {
+            customerController.deleteCustomerById(UUID.randomUUID());
+        });
+    }
+
 
 
 
