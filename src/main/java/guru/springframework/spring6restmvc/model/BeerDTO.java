@@ -1,7 +1,9 @@
 package guru.springframework.spring6restmvc.model;
 
+import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
 import lombok.Data;
 
@@ -21,9 +23,14 @@ public class BeerDTO {
     @NotBlank
     @NotNull
     private String beerName;
+    @NotNull
     private BeerStyle beerStyle;
+    @NotBlank
+    @NotNull
     private String upc;
     private Integer quantityOnHand;
+    @NotNull
+    @PositiveOrZero
     private BigDecimal price;
     private LocalDateTime createdDate;
     private LocalDateTime updateDate;
